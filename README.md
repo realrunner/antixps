@@ -3,20 +3,19 @@ antixps
 
 Antix.io print server
 
-#Prep ubuntu 14.04
+#Prep ubuntu
 
-    $ sudo apt-get install openssh-server
-    $ sudo apt-get install python3-pip
+    $ sudo apt-get install git openssh-server python3-pip
     $ sudo pip3 install virtualenv
 
-#Prep virutal env
+#Prep virutalenv
 
     $ mkdir antixps
     $ cd antixps
     $ virtualenv ENV
     $ source ENV/bin/activate
 
-#install dependencies
+#Install Dependencies
 
     $ wget https://github.com/walac/pyusb/tarball/master
     $ tar -xzf master
@@ -37,3 +36,7 @@ Antix.io print server
     $ pip install Pillow
     $ pip install pyserial
     $ pip install cherrypy
+    
+#Install antixps
+    $ git clone https://github.com/realrunner/antixps.git
+    $ cp antixps
