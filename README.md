@@ -39,4 +39,5 @@ Antix.io print server
     
 #Install antixps
     $ git clone https://github.com/realrunner/antixps.git
-    $ cp antixps
+    $ cp antixps/upstart-example.conf /etc/init/antixps.conf
+    $ # edit /etc/init/antixps.conf to have correct path information
