@@ -74,7 +74,7 @@ def scan_printers(apikey):
     cfg.write()
     return dict(printers=cfg.printers)
 
-@get('/test/<printer>/<apikey>')
+@get('/test/<printer_id>/<apikey>')
 def print_test_page(printer_id, apikey):
     if apikey != cfg.api_key:
         abort(403, "Access Denied")
