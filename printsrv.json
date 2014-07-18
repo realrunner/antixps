@@ -1,8 +1,10 @@
 {
     "printers": [], 
-    "port": 48120, 
+    "organization_id": "9ad05259-42fe-4f95-a7b9-4ee1b8aa516f", 
+    "debug": true, 
     "server_name": "Alpha", 
-    "api_key": "pass22", 
     "app_url": "https://antix.io", 
-    "app_printer_key": "13e8eb3a-0a3e-4b45-b739-e7a11063e98b"
+    "port": 48120, 
+    "app_printer_key": "13e8eb3a-0a3e-4b45-b739-e7a11063e98b", 
+    "api_key": "pass22"
 }
