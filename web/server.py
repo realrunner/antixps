@@ -103,9 +103,9 @@ def print_test_page(printer_id, apikey):
     return "done"
 
 
-@get('/helloprinter/<printer>/<apikey>')
-def hello_printer(printer_id, apikey):
-    if apikey != cfg.api_key:
+@get('/helloprinter/<printer_id>/<api_key>')
+def hello_printer(printer_id, api_key):
+    if api_key != cfg.api_key:
         abort(403, "Access Denied")
 
     p = printer.get_printer(printer_id, cfg)
