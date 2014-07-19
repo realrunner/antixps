@@ -46,9 +46,9 @@ class Escpos:
         buffer = "%02X%02X%02X%02X" % (((size[0]/size[1])/8), 0, size[1], 0)
         if path_buffer is None:
             self._raw(S_RASTER_N)
-            self._raw(buffer.decode('hex'))
+            self._raw(bytes.fromhex(buffer).decode('utf8'))
         else:
-            buffer_file_output = S_RASTER_N + buffer.decode('hex')
+            buffer_file_output = S_RASTER_N + bytes.fromhex(buffer).decode('utf8')
             buffer = ""
 
         while i < len(line):
@@ -60,10 +60,10 @@ class Escpos:
             printing once the image buffer is created """
 
         if path_buffer is None:
-            self._raw(buffer.decode("hex"))
+            self._raw(bytes.fromhex(buffer).decode('utf8'))
         else:
             fb = open(path_buffer, 'w')
-            buffer_file_output += buffer.decode("hex")
+            buffer_file_output += bytes.fromhex(buffer).decode('utf8')
             fb.write(buffer_file_output)
             fb.close()
             print ("INFO: Image converted to file with buffer content.")
