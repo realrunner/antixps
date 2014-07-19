@@ -107,7 +107,7 @@ class Command(object):
             "cut": lambda: _printer.cut(),
             "cashdraw": lambda: _printer.cashdraw(self.details['pin']),
             "reset": lambda: _printer.reset(),
-            "qr": lambda: _printer.qr(self.details['data']),
+            "qr": lambda: _printer.qr(self.details['data'], use_escpos=True),
             "image": lambda: _printer.image(self.fetch_image(self.details['path'])),
             "set": lambda: _printer.set(**dict([(k, v) for k, v in self.details.items() if k != 'command'])),
         }[self.details['command']]()
