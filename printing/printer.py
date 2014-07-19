@@ -182,9 +182,9 @@ def find_printers():
              "idVendor": d.idVendor,
              "address": d.address,
              "bus": d.bus,
-             "manufacturer": usb.util.get_string(d, 256, 1),
-             "model": usb.util.get_string(d, 256, 2),
-             "serial": usb.util.get_string(d, 256, 3)}
+             "manufacturer": usb.util.get_string(d, 1),
+             "model": usb.util.get_string(d, 2),
+             "serial": usb.util.get_string(d, 3)}
             for d in usb.core.find(find_all=1, custom_match=FindClass(PRINTER_CLASS))]
 
 
