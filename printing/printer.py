@@ -5,6 +5,7 @@ import logging
 import os
 import urllib.request, urllib.parse, urllib.error
 import io
+import traceback
 
 from escpos import printer
 import qrcode
@@ -138,9 +139,6 @@ class Printer(object):
             self._print(p, commands)
             del p
         except Exception as ex:
-            import traceback
-
-            traceback.print_exc()
             logger.error("Failed initializing configured printer: " + str(ex))
         finally:
             self.lock.release()
@@ -151,8 +149,6 @@ class Printer(object):
             p = self.get_printer()
             del p
         except Exception as ex:
-            import traceback
-
             traceback.print_exc()
             logger.error("Failed initializing configured printer: " + str(ex))
         finally:
@@ -173,6 +169,7 @@ class Printer(object):
             try:
                 command.send(_printer)
             except Exception as ex:
+                traceback.print_exc()
                 logger.warn("Failed print command: {0}\n{1}".format(command, ex))
                 pass
 
