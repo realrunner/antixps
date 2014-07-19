@@ -118,7 +118,7 @@ class Command(object):
         if path.startswith('/'):
             path = self.cfg.app_url + path
         image_data = urllib.request.urlopen(path).read()
-        fp = io.StringIO(image_data)
+        fp = io.BytesIO(image_data)
         return fp
 
     def __str__(self):
