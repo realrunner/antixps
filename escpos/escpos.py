@@ -17,6 +17,8 @@ import time
 from .constants import *
 from .exceptions import *
 
+import logging
+
 class Escpos:
     """ ESC/POS Printer object """
     device    = None
@@ -84,7 +86,10 @@ class Escpos:
         if im.size[1] > 255:
             raise ImageSizeError()
 
+        logging.getLogger().info("Image size {0}".format(im.size))
+
         im_border = self._check_image_size(im.size[0])
+        logging.getLogger().info("Image border {0}".format(im_border))
         for i in range(im_border[0]):
             im_left += "0"
         for i in range(im_border[1]):
