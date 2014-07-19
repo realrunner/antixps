@@ -40,8 +40,8 @@ class Escpos:
         """ Print formatted image """
         i = 0
         cont = 0
-        buffer = ""
-        buffer_file_output = ""
+        buffer = bytes()
+        buffer_file_output = bytes()
 
         buffer = "%02X%02X%02X%02X" % (((size[0]/size[1])/8), 0, size[1], 0)
         if path_buffer is None:
@@ -60,10 +60,10 @@ class Escpos:
             printing once the image buffer is created """
 
         if path_buffer is None:
-            self._raw(bytes.fromhex(buffer).decode('utf8'))
+            self._raw(bytes.fromhex(buffer))
         else:
             fb = open(path_buffer, 'w')
-            buffer_file_output += bytes.fromhex(buffer).decode('utf8')
+            buffer_file_output += bytes.fromhex(buffer)
             fb.write(buffer_file_output)
             fb.close()
             print ("INFO: Image converted to file with buffer content.")
