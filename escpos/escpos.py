@@ -46,7 +46,7 @@ class Escpos:
         buffer = "%02X%02X%02X%02X" % (((size[0]/size[1])/8), 0, size[1], 0)
         if path_buffer is None:
             self._raw(S_RASTER_N)
-            self._raw(bytes.fromhex(buffer).decode('utf8'))
+            self._raw(bytes.fromhex(buffer))
         else:
             buffer_file_output = S_RASTER_N + bytes.fromhex(buffer).decode('utf8')
             buffer = ""
