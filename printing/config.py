@@ -7,7 +7,7 @@ import socket
 logger = logging.getLogger("Config")
 
 defaults = {
-    "app_url": "https://antix.io",
+    "app_url": "https://antix.io/antix",
     "app_printer_key": "13e8eb3a-0a3e-4b45-b739-e7a11063e98b",
     "api_key": "pass22",
     "server_name": "Alpha",

@@ -88,7 +88,7 @@ def print_test_page(printer_id, apikey):
         {"command": "text", "text": "Printer Test"},
         {"command": "set", "align": "center"},
         {"command": "text", "text": " "},
-        {"command": "image", "path": "{0}/printer/logo/{1}/{2}".format(cfg.app_url, cfg.organization_id, ping_thing.key)},
+        {"command": "image", "path": "{0}/api/printer/logo/{1}/{2}".format(cfg.app_url, cfg.organization_id, ping_thing.key)},
         {"command": "text", "text": " "},
         {"command": "set", "align": "left"},
         {"command": "text", "text": "Printer: {0}".format(p.config['name'])},

@@ -49,7 +49,7 @@ class Pinger(TaskThread):
         if not self.config.organization_id:
             return
 
-        url = self.config.app_url + "/printer/ping/" + self.key
+        url = self.config.app_url + "/api/printer/ping/" + self.key
         data = {
             "name": self.config.server_name,
             "ip": self.config.find_local_ip(),
