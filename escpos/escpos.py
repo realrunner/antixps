@@ -19,6 +19,7 @@ from .exceptions import *
 
 import logging
 
+
 class Escpos:
     """ ESC/POS Printer object """
     device    = None
@@ -70,7 +71,6 @@ class Escpos:
 
         buffer = ""
 
-
     def fullimage(self, img, max_height=860, width=512, histeq=True):
         """ Resizes and prints an arbitrarily sized image """
         if isinstance(img, Image.Image):
@@ -110,7 +110,6 @@ class Escpos:
                                 min(im.size[1], current + bandsize))))
             current += bandsize
 
-
     def image(self, img):
         """ Parse image and prepare it to a printable format """
         pixels   = []
@@ -126,7 +125,7 @@ class Escpos:
             im = Image.open(img).convert("RGB")
 
         if im.size[0] > 512:
-            print  "WARNING: Image is wider than 512 and could be truncated at print time "
+            print("WARNING: Image is wider than 512 and could be truncated at print time ")
         if im.size[1] > 255:
             raise ImageSizeError()
 
