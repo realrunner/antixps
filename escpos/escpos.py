@@ -131,10 +131,10 @@ class Escpos:
             raise ImageSizeError()
 
         im_border = self._check_image_size(im.size[0])
-        if im_border[0] != 0 or im_border[0] != 0:
-            new_size = (im.size[0]+im_border[0], im.size[1]+im_border[1])
+        if im_border[0] != 0 or im_border[1] != 0:
+            new_size = (im.size[0]+(im_border[0]*2), im.size[1]+(im_border[1]*2))
             padded = Image.new('RGB', new_size, "white")
-            offset = (int(im_border[0]/2), int(im_border[1]/2))
+            offset = (int(im_border[0]), int(im_border[1]))
             padded.paste(im, offset)
             im = padded
             im_border = (0, 0)
