@@ -5,7 +5,7 @@ Antix.io print server
 
 #Prep ubuntu
 
-    $ sudo apt-get install git openssh-server python3-pip
+    $ sudo apt-get install git openssh-server python3-pip libjpeg8-dev libopenjpeg-dev
     $ sudo pip3 install virtualenv
 
 #Prep virutalenv
