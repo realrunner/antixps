@@ -2,15 +2,8 @@ __author__ = 'mnelson'
 
 import bottle
 import os
-from web.server import cfg, ping_thing
 import logging
-
-application = bottle.default_app()
-
-#bottle.run(server='cherrypy', host='0.0.0.0', port=cfg.port, debug=cfg.debug, reloader=cfg.debug, quiet=cfg.debug)
-
 import cherrypy
-
 
 def stop_ping_thing():
     logging.getLogger().info("Shutting down ping thread")
@@ -19,8 +12,10 @@ def stop_ping_thing():
 if __name__ == '__main__':
 
     script_dir = os.path.dirname(os.path.realpath(__file__))
-
     os.chdir(os.path.join(script_dir, 'web'))
+
+    from web.server import cfg, ping_thing
+    application = bottle.default_app()
 
     # Mount the application
     cherrypy.tree.graft(application, "/")
