@@ -13,6 +13,7 @@ except ImportError:
 
 import qrcode
 import time
+from PIL import ImageChops
 
 from .constants import *
 from .exceptions import *
@@ -130,6 +131,16 @@ class Escpos:
             raise ImageSizeError()
 
         im_border = self._check_image_size(im.size[0])
+        if im_border[0] != 0 or im_border[0] != 0:
+            new_size = (im.size[0]+im_border[0], im.size[1]+im_border[1])
+            padded = Image.new('RGB', new_size, "white")
+            offset = (int(im_border[0]/2), int(im_border[1]/2))
+            padded.paste(im, offset)
+            im = padded
+            im_border = (0, 0)
+
+        im = ImageChops.offset(im, -32, 0)
+
         for i in range(im_border[0]):
             im_left += "0"
         for i in range(im_border[1]):
