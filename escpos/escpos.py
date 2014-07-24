@@ -71,7 +71,47 @@ class Escpos:
         buffer = ""
 
 
-    def _convert_image(self, im, path_buffer = None):
+    def fullimage(self, img, max_height=860, width=512, histeq=True):
+        """ Resizes and prints an arbitrarily sized image """
+        if isinstance(img, Image.Image):
+            im = img.convert("RGB")
+        else:
+            im = Image.open(img).convert("RGB")
+
+        if histeq:
+            # Histogram equaliztion
+            h = im.histogram()
+            lut = []
+            for b in range(0, len(h), 256):
+                # step size
+                step = reduce(operator.add, h[b:b+256]) / 255
+                # create equalization lookup table
+                n = 0
+                for i in range(256):
+                    lut.append(n / step)
+                    n = n + h[i+b]
+            im = im.point(lut)
+
+        if width:
+            ratio = float(width) / im.size[0]
+            newheight = int(ratio * im.size[1])
+
+            # Resize the image
+            im = im.resize((width, newheight), Image.ANTIALIAS)
+
+        if max_height and im.size[1] > max_height:
+            im = im.crop((0, 0, im.size[0], max_height))
+
+        # Divide into bands
+        bandsize = 255
+        current = 0
+        while current < im.size[1]:
+            self.image(im.crop((0, current, width or im.size[0],
+                                min(im.size[1], current + bandsize))))
+            current += bandsize
+
+
+    def image(self, img):
         """ Parse image and prepare it to a printable format """
         pixels   = []
         pix_line = ""
@@ -80,9 +120,13 @@ class Escpos:
         switch   = 0
         img_size = [ 0, 0 ]
 
+        if isinstance(img, Image.Image):
+            im = img.convert("RGB")
+        else:
+            im = Image.open(img).convert("RGB")
 
         if im.size[0] > 512:
-            print  ("WARNING: Image is wider than 512 and could be truncated at print time ")
+            print  "WARNING: Image is wider than 512 and could be truncated at print time "
         if im.size[1] > 255:
             raise ImageSizeError()
 
@@ -112,38 +156,11 @@ class Escpos:
                         break
                     elif im_color > (255 * 3 / pattern_len * pattern_len) and im_color <= (255 * 3):
                         pix_line += im_pattern[-1]
-                        break 
+                        break
             pix_line += im_right
             img_size[0] += im_border[1]
 
-        self._print_image(pix_line, img_size, path_buffer)
-
-
-    def image(self,path_img,path_buffer=None):
-        """ Open image file """
-        """ If path_buffer (output file name) is defined, no image is printed
-            but a file for the use with function buffer() is generated """
-        if path_buffer is not None:
-            print("INFO: Opening image file.")
-        im_open = Image.open(path_img)
-        im = im_open.convert("RGB")
-        # Convert the RGB image in printable image
-        if path_buffer is not None:
-            print("INFO: Image conversion to file with buffer content started...")
-        self._convert_image(im,path_buffer)
-
-
-    def buffer(self,path_buffer=None):
-        """ Print directly from file with buffer content """
-        """ Data bigger than the buffer size of the printer (e.g. 4K for TM-T20II)
-            or successively sending large amounts of data before the printer is ready
-            can cause the buffer to overrun and a USB timeout is likely to be thrown """
-        if path_buffer is None:
-            print("ERROR: File path needed as argument for printing from file with buffer content")
-        else:
-            fb = open(path_buffer)
-            buffer = fb.read()
-            self._raw(buffer)
+        self._print_image(pix_line, img_size)
 
 
     def qr(self,text,use_escpos=False,qr_escpos_size=4,qr_escpos_error_correction=3):
