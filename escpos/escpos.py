@@ -40,7 +40,7 @@ class Escpos:
         """ Print formatted image """
         i = 0
         cont = 0
-        buffer = bytes()
+        buffer = ""
         buffer_file_output = bytes()
 
         buffer = "%02X%02X%02X%02X" % (((size[0]/size[1])/8), 0, size[1], 0)
@@ -48,7 +48,7 @@ class Escpos:
             self._raw(S_RASTER_N)
             self._raw(bytes.fromhex(buffer))
         else:
-            buffer_file_output = S_RASTER_N + bytes.fromhex(buffer).decode('utf8')
+            buffer_file_output = S_RASTER_N + bytes.fromhex(buffer)
             buffer = ""
 
         while i < len(line):
