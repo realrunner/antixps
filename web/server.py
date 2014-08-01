@@ -7,6 +7,8 @@ from printing.config import Config
 from printing import printer
 from printing import ping
 import os
+import subprocess
+import threading
 
 
 ## load config ##
@@ -168,14 +170,20 @@ def print_something(printer_id, apikey):
         return "failure " + str(ex)
 
 
+def restart():
+    os.execl("/usr/sbin/service", "antixps", "restart")
+
+
 @get('/upgrade/<api_key>')
 def upgrade(api_key):
     if api_key != cfg.api_key:
         abort(403, "Access Denied")
-    #pid = subprocess.Popen(['nohup', 'sh', '../upgrade.sh', '&']).pid
     pwd = os.getcwd()
-    cmd = os.path.realpath(os.path.join(pwd, '../upgrade.sh'))
-    os.execl("/bin/bash", cmd, "&")
+    rootdir = os.path.realpath(os.path.join(pwd, '../'))
+    os.chdir(rootdir)
+    pid = subprocess.Popen(['git', 'pull']).pid
+    os.chdir(pwd)
+    threading.Timer(2.0, restart).start()
     return template('upgrade')
 
 
