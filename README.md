@@ -21,6 +21,7 @@ Antix.io print server
     $ tar -xzf master
     $ cd walac-pyusb*
     $ python setup.py install
+    $ cd..
     $ rm master
     $ rm -rf walac-pyusb*
 

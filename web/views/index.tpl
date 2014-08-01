@@ -66,7 +66,7 @@
     <div class="footer" style="text-align: center; margin-top: 30px;">
         <div class="footer-inner">
             <div class="container">
-
+                <a href="/upgrade/{{api_key}}">Upgrade Server</a>
                 <div class="copy">
                     <p>&copy; Copyright <a href="#">Antix &trade;</a></p>
                 </div>
