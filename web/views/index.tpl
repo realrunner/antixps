@@ -32,7 +32,7 @@
                 <h1>
                    <span><a href="javascript:"><i class="fa fa-print orange"></i> Antix Print Server</a></span>
                 </h1>
-                <span>Version 1.01</span>
+                <span>Version 1.02</span>
 
             </div>
         </div>
