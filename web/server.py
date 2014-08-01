@@ -6,7 +6,7 @@ from bottle import route, run, get, post, request, static_file, response, templa
 from printing.config import Config
 from printing import printer
 from printing import ping
-import subprocess
+import os
 
 
 ## load config ##
@@ -172,7 +172,10 @@ def print_something(printer_id, apikey):
 def upgrade(api_key):
     if api_key != cfg.api_key:
         abort(403, "Access Denied")
-    pid = subprocess.Popen(['nohup', 'sh', '../upgrade.sh', '&']).pid
+    #pid = subprocess.Popen(['nohup', 'sh', '../upgrade.sh', '&']).pid
+    pwd = os.getcwd()
+    cmd = os.path.realpath(os.path.join(pwd, '../upgrade.sh'))
+    os.execl("/bin/bash", cmd, "&")
     return template('upgrade')
 
 
