@@ -174,14 +174,23 @@ class Printer(object):
                 pass
 
 
+def get_printer_string(device, num):
+    try:
+        return usb.util.get_string(device, num)
+    except Exception as ex:
+        traceback.print_exc()
+        logger.warn("Failed getting printer info {0}\n{1}".format(num, ex))
+        return "Unknown"
+
+
 def find_printers():
     return [{"idProduct": d.idProduct,
              "idVendor": d.idVendor,
              "address": d.address,
              "bus": d.bus,
-             "manufacturer": usb.util.get_string(d, 1),
-             "model": usb.util.get_string(d, 2),
-             "serial": usb.util.get_string(d, 3)}
+             "manufacturer": get_printer_string(d, 1),
+             "model": get_printer_string(d, 2),
+             "serial": get_printer_string(d, 3)}
             for d in usb.core.find(find_all=1, custom_match=FindClass(PRINTER_CLASS))]
 
 

@@ -46,12 +46,16 @@ class Config(object):
 
     @staticmethod
     def find_local_ip():
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         try:
-            s.connect(("8.8.8.8", 80))
-            return s.getsockname()[0]
-        finally:
-            s.close()
+            return socket.gethostname()
+        except Exception as ex:
+            logger.error("Failed getting hostname. {0}".format(ex))
+            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            try:
+                s.connect(("8.8.8.8", 80))
+                return s.getsockname()[0]
+            finally:
+                s.close()
 
     # def server_url(self):
     #     return "http://{0}:{1}".format(self.find_local_ip(), self.data['port'])

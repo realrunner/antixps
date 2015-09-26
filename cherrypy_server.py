@@ -5,6 +5,7 @@ import os
 import logging
 import cherrypy
 
+
 def stop_ping_thing():
     logging.getLogger().info("Shutting down ping thread")
     ping_thing.shutdown()
@@ -29,6 +30,9 @@ if __name__ == '__main__':
     # Configure the server object
     server.socket_host = "0.0.0.0"
     server.socket_port = cfg.port
+    server.ssl_certificate = ""
+    server.ssl_private_key = ""
+    server.ssl_certificate_chain = ""
     server.thread_pool = 30
 
     # Subscribe this server
