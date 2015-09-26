@@ -47,7 +47,11 @@ class Config(object):
     @staticmethod
     def find_local_ip():
         try:
-            return socket.gethostname()
+            hostname = socket.gethostname()
+            if ".local" not in hostname:
+                return hostname + ".local"
+            else:
+                return hostname
         except Exception as ex:
             logger.error("Failed getting hostname. {0}".format(ex))
             s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
