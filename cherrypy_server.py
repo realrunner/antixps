@@ -30,9 +30,10 @@ if __name__ == '__main__':
     # Configure the server object
     server.socket_host = "0.0.0.0"
     server.socket_port = cfg.port
-    server.ssl_certificate = ""
-    server.ssl_private_key = ""
-    server.ssl_certificate_chain = ""
+    server.ssl_module = 'builtin'
+    server.ssl_certificate = "cert.pem"
+    server.ssl_private_key = "privkey.pem"
+    # server.ssl_certificate_chain = ""
     server.thread_pool = 30
 
     # Subscribe this server
