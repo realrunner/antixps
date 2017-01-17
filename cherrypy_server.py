@@ -1,22 +1,24 @@
-__author__ = 'mnelson'
-
-import bottle
+import cherrypy
 import os
 import logging
-import cherrypy
 
 
 def stop_ping_thing():
+    from web.server import ping_thing
     logging.getLogger().info("Shutting down ping thread")
     ping_thing.shutdown()
 
-if __name__ == '__main__':
+
+def start_server():
+    import bottle
 
     script_dir = os.path.dirname(os.path.realpath(__file__))
     os.chdir(os.path.join(script_dir, 'web'))
 
-    from web.server import cfg, ping_thing
+    from web.server import cfg
     application = bottle.default_app()
+
+    cherrypy.config.update({'engine.autoreload.on': False})
 
     # Mount the application
     cherrypy.tree.graft(application, "/")
@@ -30,11 +32,10 @@ if __name__ == '__main__':
     # Configure the server object
     server.socket_host = "0.0.0.0"
     server.socket_port = cfg.port
-    server.ssl_module = 'builtin'
-    server.ssl_certificate = "cert.pem"
-    server.ssl_private_key = "privkey.pem"
-    # server.ssl_certificate_chain = ""
     server.thread_pool = 30
+    server.ssl_module = 'builtin'
+    server.ssl_certificate = os.path.realpath(os.path.join('..', 'cert', 'cert.pem'))
+    server.ssl_private_key = os.path.realpath(os.path.join('..', 'cert', 'key.pem'))
 
     # Subscribe this server
     server.subscribe()
@@ -42,6 +43,13 @@ if __name__ == '__main__':
     cherrypy.engine.subscribe('stop', stop_ping_thing)
 
     cherrypy.engine.start()
-    cherrypy.engine.block()
 
     logging.getLogger().info("All clean, good bye")
+
+
+def stop_server():
+    cherrypy.engine.exit()
+
+if __name__ == '__main__':
+    start_server()
+    cherrypy.engine.block()

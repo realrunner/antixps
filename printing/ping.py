@@ -1,5 +1,3 @@
-__author__ = 'mnelson'
-
 import threading
 import urllib.request, urllib.error, urllib.parse
 from bottle import json_dumps
@@ -42,7 +40,7 @@ class Pinger(TaskThread):
     key = "13e8eb3a-0a3e-4b45-b739-e7a11063e98b"
 
     def __init__(self, config):
-        TaskThread.__init__(self, 30.0)
+        TaskThread.__init__(self, 300.0)
         self.config = config
 
     def task(self):

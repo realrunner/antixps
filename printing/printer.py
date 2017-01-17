@@ -1,5 +1,3 @@
-__author__ = 'mnelson'
-
 from threading import Lock
 import logging
 import os
@@ -11,6 +9,8 @@ from escpos import printer
 import qrcode
 import usb.core
 import usb.util
+
+__author__ = 'mnelson'
 
 PRINTER_CLASS = 7
 
@@ -155,11 +155,14 @@ class Printer(object):
             self.lock.release()
 
     def get_printer(self):
-        vendor = self.config["idVendor"]
-        product = self.config["idProduct"]
-        address = self.config["address"]
-        bus = self.config["bus"]
-        p = CustomPrinter(vendor, product, bus, address)
+        if "isWindows" in self.config:
+            p = printer.WindowsSharedPrinter(self.config["share_name"], self.config["name"])
+        else:
+            vendor = self.config["idVendor"]
+            product = self.config["idProduct"]
+            address = self.config["address"]
+            bus = self.config["bus"]
+            p = CustomPrinter(vendor, product, bus, address)
         p.reset()
         return p
 
@@ -174,24 +177,19 @@ class Printer(object):
                 pass
 
 
-def get_printer_string(device, num):
-    try:
-        return usb.util.get_string(device, num)
-    except Exception as ex:
-        traceback.print_exc()
-        logger.warn("Failed getting printer info {0}\n{1}".format(num, ex))
-        return "Unknown"
-
-
 def find_printers():
-    return [{"idProduct": d.idProduct,
-             "idVendor": d.idVendor,
-             "address": d.address,
-             "bus": d.bus,
-             "manufacturer": get_printer_string(d, 1),
-             "model": get_printer_string(d, 2),
-             "serial": get_printer_string(d, 3)}
-            for d in usb.core.find(find_all=1, custom_match=FindClass(PRINTER_CLASS))]
+	try:
+		return [{"idProduct": d.idProduct,
+				 "idVendor": d.idVendor,
+				 "address": d.address,
+				 "bus": d.bus,
+				 "manufacturer": usb.util.get_string(d, 1),
+				 "model": usb.util.get_string(d, 2),
+				 "serial": usb.util.get_string(d, 3)}
+				for d in usb.core.find(find_all=1, custom_match=FindClass(PRINTER_CLASS))]
+	except Exception as ex:
+		logger.warn("USB lookup failure {0}".format(ex))
+		return []
 
 
 def merge_connected_with_config(connected, config):
@@ -206,7 +204,7 @@ def merge_connected_with_config(connected, config):
             config.printers.append(config_map[d['serial']])
         config_map[d['serial']]["connected"] = True
     for d in config.printers:
-        if d['serial'] not in conn_map:
+        if d['serial'] not in conn_map and 'isWindows' not in d:
             d["connected"] = False
 
 

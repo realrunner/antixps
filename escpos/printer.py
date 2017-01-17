@@ -10,10 +10,16 @@ import usb.core
 import usb.util
 import serial
 import socket
+import tempfile
+import os
+import logging
+import subprocess
 
 from .escpos import *
 from .constants import *
 from .exceptions import *
+
+logger = logging.getLogger(__name__)
 
 class Usb(Escpos):
     """ Define USB printer """
@@ -159,9 +165,46 @@ class File(Escpos):
 
     def _raw(self, msg):
         """ Print any command sent in raw format """
-        self.device.write(msg);
+        self.device.write(msg)
 
 
     def __del__(self):
         """ Close system file """
         self.device.close()
+
+
+class WindowsSharedPrinter(Escpos):
+    """ Define Windows Raw printer with the PRINT command """
+
+    def __init__(self, share_name="localhost", printer_name="ANTIX_RECEIPT_PRINTER"):
+        """
+        @param devfile : Device file under dev filesystem
+        """
+        self.share_name = share_name
+        self.printer_name = printer_name
+        self.open()
+
+    def open(self):
+        pass
+
+    def _raw(self, msg):
+        """ Print any command sent in raw format """
+        with tempfile.NamedTemporaryFile(prefix="antixps", delete=False) as fp:
+            fp.write(bytes(msg, "utf-8"))
+            fp.close()
+            try:
+                _cmd = r'type {} > "\\{}\{}"'.format(fp.name, self.share_name, self.printer_name)
+                logger.debug("Printing {}".format(_cmd))
+                process = subprocess.Popen(_cmd, stdout=subprocess.PIPE, shell=True)
+                out, err = process.communicate()
+                logger.debug("Print result {}\n{}".format(out, err))
+            except Exception as e:
+                logger.error("Failed printing {}. {}".format(msg, e))
+            finally:
+                os.remove(fp.name)
+
+    def reset(self):
+        pass
+
+    def __del__(self):
+        pass

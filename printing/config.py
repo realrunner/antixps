@@ -1,8 +1,10 @@
-__author__ = 'mnelson'
 from bottle import json_dumps, json_loads
 from os import path
 import logging
 import socket
+import platform
+
+__author__ = 'mnelson'
 
 logger = logging.getLogger("Config")
 
@@ -25,6 +27,7 @@ class Config(object):
         self.data = {}
         self.data.update(defaults)
         self.load()
+        self.isWindows = 'windows' in platform.system().lower()
 
     def load(self):
         if path.exists(self.filename):
@@ -46,20 +49,12 @@ class Config(object):
 
     @staticmethod
     def find_local_ip():
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         try:
-            hostname = socket.gethostname()
-            if ".local" not in hostname:
-                return hostname + ".local"
-            else:
-                return hostname
-        except Exception as ex:
-            logger.error("Failed getting hostname. {0}".format(ex))
-            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            try:
-                s.connect(("8.8.8.8", 80))
-                return s.getsockname()[0]
-            finally:
-                s.close()
+            s.connect(("8.8.8.8", 80))
+            return s.getsockname()[0]
+        finally:
+            s.close()
 
     # def server_url(self):
     #     return "http://{0}:{1}".format(self.find_local_ip(), self.data['port'])

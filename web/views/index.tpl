@@ -51,6 +51,9 @@
                         <div class="box-icon">
                             <a href="javascript:" class="save" title="Save" data-rel="tooltip"><i class="fa fa-save"></i></a>
                         </div>
+                        <div class="box-icon">
+                            <a href="javascript:" class="add enabled" title="Add Printer" data-rel="tooltip"><i class="fa fa-plus"></i></a>
+                        </div>
                     </div>
                     <div class="box-content">
                         <div id="printers"></div>

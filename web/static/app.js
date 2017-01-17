@@ -4,7 +4,8 @@
 
     var Printers = Backbone.View.extend({
         events: {
-            "click .save":"save"
+            "click .save":"save",
+            "click .add":"add"
         },
         render:function() {
             this.setElement($("#options"));
@@ -28,6 +29,18 @@
         clean:function() {
             $(".save").removeClass("enabled");
             this.isDirty = false;
+        },
+        add:function() {
+            var printers = config.get('printers');
+            printers.push({
+                isWindows: true,
+                connected: true,
+                share_name: 'localhost',
+                serial: (Math.floor(Math.random() * 100000))+"",
+                name: 'New Printer'
+            });
+            this.dirty();
+            this.renderPrinters();
         },
         save:function() {
             var $this = this;
@@ -58,20 +71,24 @@
 
             var columns = [
                 {name:"name", label:'Name', editable:true, cell: "string"},
+                {name:"share_name", label:'Share', editable:true, cell: "string"},
                 {name:"type", label:'Type', editable:false, cell: Backgrid.Cell.extend({
                     render: function () {
                         this.$el.empty();
-                        this.$el.append($("<span>").text(this.model.get('manufacturer') + " " + this.model.get('model')));
+                        if (this.model.get('isWindows')) {
+                            this.$el.append($("<span>").text("Windows Shared Printer"));
+                        } else {
+                            this.$el.append($("<span>").text(this.model.get('manufacturer') + " " + this.model.get('model')));
+                        }
                         return this;
                     }
                 })},
                 {name:"serial", label:'Serial #', editable:false, cell: "string"},
-                {name:"connected", label:'Connected', editable:false, cell: "boolean"},
+                {name:"connected", label:'Connected', editable:true, cell: "boolean"},
                 {name:"identify", label:'', editable:false, cell: Backgrid.Cell.extend({
                     render: function () {
                         var _this = this;
                         this.$el.empty();
-
 
                         this.$el.append($("<a>")
                             .addClass("btn btn-sm btn-info pull-right spacer")
@@ -103,7 +120,7 @@
                 collection:printers
             });
 
-            this.$el.find("#printers").append(this.grid.render().el);
+            this.$el.find("#printers").empty().append(this.grid.render().el);
         },
         identify:function(printer) {
             var ps = this.model;
